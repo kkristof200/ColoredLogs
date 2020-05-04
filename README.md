@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/56f15fd8619940ef959cbc7416f8248e)](https://app.codacy.com/gh/kopensource/colored_logs?utm_source=github.com&utm_medium=referral&utm_content=kopensource/colored_logs&utm_campaign=Badge_Grade_Settings)
 # colored_logs ![python_version](https://img.shields.io/static/v1?label=Python&message=3.5%20|%203.6%20|%203.7&color=blue) [![build](https://travis-ci.com/kopensource/colored_logs.svg?branch=develop)](https://travis-ci.com/github/kopensource/colored_logs) [![codecov](https://codecov.io/gh/kopensource/colored_logs/branch/master/graph/badge.svg)](https://codecov.io/gh/kopensource/colored_logs) [![DeepSource](https://static.deepsource.io/deepsource-badge-dark-mini.svg)](https://deepsource.io/gh/kopensource/colored_logs/?ref=repository-badge)
 
 ### Install
