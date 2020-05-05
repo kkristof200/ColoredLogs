@@ -21,8 +21,8 @@ class LoggerUtils:
         
         if environment == LogEnvironment.Console:
             return ANSI.styled(message, color_pair, self.trimmed_string_comps)
-        elif environment == LogEnvironment.HTML:
-            return HTML.styled(message, color_pair, self.trimmed_string_comps)
+        
+        return HTML.styled(message, color_pair, self.trimmed_string_comps)
 
     def append_to_string_to_console_edge(
         self,
@@ -95,10 +95,15 @@ class LoggerUtils:
         return '~' + duration
 
     @staticmethod
-    def console_max_chars_per_line() -> int:
-        import os
+    def console_max_chars_per_line(
+        default_value: int = 90
+    ) -> int:
+        try:
+            import os
 
-        return os.get_terminal_size().columns
+            return os.get_terminal_size().columns
+        except:
+            return default_value
     
     @staticmethod
     def string_without_ansii(string: str) -> str:
