@@ -1,5 +1,6 @@
 from typing import Optional
 
+from .models.color_config import ColorConfig
 from .models.log_info import LogInfo
 from .models.color_pair import ColorPair
 from .models.color import Color
@@ -14,6 +15,9 @@ class LoggerUtils:
         dim_color_pair: Optional[ColorPair],
         environment: LogEnvironment
     ) -> str:
+        main_color_pair = ColorConfig._ensure_color_pair(main_color_pair)
+        dim_color_pair = ColorConfig._ensure_color_pair(dim_color_pair)
+
         color_pair = dim_color_pair
 
         if log_info in [LogInfo.LogType, LogInfo.Icon, LogInfo.Message]:
@@ -21,8 +25,8 @@ class LoggerUtils:
         
         if environment == LogEnvironment.Console:
             return ANSI.styled(message, color_pair, self.trimmed_string_comps)
-        elif environment == LogEnvironment.HTML:
-            return HTML.styled(message, color_pair, self.trimmed_string_comps)
+        
+        return HTML.styled(message, color_pair, self.trimmed_string_comps)
 
     def append_to_string_to_console_edge(
         self,
@@ -95,10 +99,20 @@ class LoggerUtils:
         return '~' + duration
 
     @staticmethod
-    def console_max_chars_per_line() -> int:
-        import os
+    def console_max_chars_per_line(
+        default_value: int = 80
+    ) -> int:
+        try:
+            import os
 
-        return os.get_terminal_size().columns
+            return os.get_terminal_size().columns
+        except:
+            try:
+                import shutil
+
+                return shutil.get_terminal_size(fallback=(default_value, 24))[0]
+            except:
+                return default_value
     
     @staticmethod
     def string_without_ansii(string: str) -> str:
@@ -185,7 +199,7 @@ class ANSI:
         color: Color,
         color_type: __ColorType
     ) -> str:
-        return '\033[' + str(color_type.value) + ':2::' + str(color.r) + ':' + str(color.g) + ':' + str(color.b) + 'm'
+        return '\033[' + str(color_type.value) + ';2;' + str(color.r) + ';' + str(color.g) + ';' + str(color.b) + 'm'
 
 
 class HTML:

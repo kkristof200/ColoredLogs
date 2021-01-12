@@ -1,11 +1,9 @@
 language: python
-cache: pip
+cache: pip  # cache content that does not often change, to speed up your build process
 python:
-  # - "3.4"
   - "3.5"
   - "3.6"
   - "3.7"
-  # - "3.8"
   # - "nightly"  # nightly build
 jobs:
   include:
@@ -16,20 +14,23 @@ jobs:
 before_install:
   - python3 --version
   - pip3 install -U pip
-  - pip3 install -U pytest pytest-cov
-  - pip3 install codecov
+  - pip3 install -U pytest pytest-cov   # install dependecy for testing
+  - pip3 install codecov                # install dependecy for test coverage
 script:
-  - python3 setup.py test
-  - python3 setup.py bdist_wheel
-  - pytest --cov=./
+  # - if [ "$TRAVIS_BRANCH" = "develop" ]; then echo 'this is develop'; fi # conditional script
+  - python3 setup.py bdist_wheel        # build
+  - pytest --cov=./                     # run pytest and generate coverage
 after_success:
-  - codecov # submit coverage
+  - codecov                             # submit coverage to codecov
+  - coverage xml                        # generate coverage report in xml format
+  - curl https://deepsource.io/cli | sh # install deepsource CLI
+  - ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml # Report coverage artifact to 'test-coverage' analyzer
 deploy:
-  provider: pypi
-  skip_existing: true
+  provider: pypi                        # use pypi for deploying
+  skip_existing: true                   # if build already exists, don't upload it
   skip_cleanup: true
   on:
-    branch: release
-  user: __token__
-  password:
+    branch: release                     # only deploy from release branch
+  user: __token__                       # pypi username
+  password:                             # for safety, no password is used, but an encripted version of it, created by travis
     secure: rDGlUEL1wFNRyfT6o07DbpFo2IY4Dflv/SjhHIdUhOzWPQJ7uigVRRTl7XAjy0I0BiooIUQHCuZ1r+hij5e/4Jw9CJnL3yzrq+D7WyHPs6Uaz7tbgbuddq7ZtQX+NF6e+RczGuhxhXQCXnUFN1/UF+XVuMLHlPWvGJMyDObaK9Z01NzWMBJKSjtgUenWTx7T3V5Fdc5nJGV7VoKXf/PlQTe0a0BLujmI9DiZ5bOuJ0Sw0qJv09L3syNrDEyjLgBHl+cOBFT5qHt+hfguyNsIjW0qDHkbRNbxp6lW691L/+8OrQyAO9Z7y+JC300Ox6cJjokluYYaHNRRsuower+L6ojqbbCxf2Z+kEUE93tUTtIhe+o4R1+Z2/yh2pEl/NvT3itKjN/JoO5LaYtlNaC/5Kwu2kKDKgr9bYW0LOwmF4UwrbKiFjJhbfECsrkyNapNeTkFuUguXTbDuJ1DVXQhR7FVtB0/KPApq4PVuq8OxMMmoh/2o/ieoNwcfUKjdIvf3uxc5j1m/AUMkZGBybvYLJKYHWbYlP/d95OuWTmuHIOpTIXTCQajwMchcd2uG73c1e9XMdz4/OV14Yj6IDCXM5aZ/YjiMQmAaHM+ZWLLbDCv65cu2ocC/dqn58Son6atGZS4b8XaDd1xPwj+wgVlCu3hPgZZ/qZwF3aXEi0SHME=
